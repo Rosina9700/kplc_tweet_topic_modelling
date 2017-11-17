@@ -3,15 +3,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-from nltk.corpus import stopwords
-from nltk.tokenize import RegexpTokenizer, TweetTokenizer
-from nltk.stem.porter import PorterStemmer
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-from sklearn.decomposition import NMF
-import string
-plt.style.use('ggplot')
-# plt.style.use('fivethirtyeight')
-
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.metrics import accuracy_score, f1_score, make_scorer, recall_score, precision_score
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
