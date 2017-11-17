@@ -9,6 +9,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.decomposition import NMF
 import string
 
+import cPickle as pickle
+
 def build_text_vectorizer(contents, use_stemmer=False, max_features=None, use_tfidf=True):
     '''
     Build and return a **callable** for transforming text documents to vectors,
@@ -39,14 +41,10 @@ def build_text_vectorizer(contents, use_stemmer=False, max_features=None, use_tf
         return stems
 
     vectorizer_model = Vectorizer(tokenizer=tokenize, max_features=max_features)
-    vectorizer_model.fit(contents)
+    vectorizer_model = vectorizer_model.fit(contents)
     vocabulary = np.array(vectorizer_model.get_feature_names())
 
-    # Closure over the vectorizer_model's transform method.
-    def vectorizer(X):
-        return vectorizer_model.transform(X).toarray()
-
-    return vectorizer, vocabulary
+    return vectorizer_model, vocabulary
 
 def display_topics(H, W, feature_names, documents, no_top_words, no_top_documents):
     for topic_idx, topic in enumerate(H):
@@ -79,7 +77,12 @@ if __name__=='__main__':
     print 'vectorize text...'
     text = data['text'].values
     vect, vocab = build_text_vectorizer(text, use_stemmer=True, max_features=150, use_tfidf=False)
-    vectorized = vect(text)
+    vectorized = vect.transform(text).toarray()
+    # print 'save vectorizer...'
+    # filename = 'text_vectorizer.pkl'
+    # with open(filename, 'wb') as f:
+    #     pickle.dump(vect, f)
+    # f.close()
     print 'NMF...'
     nmf = NMF(n_components=3, max_iter=200, alpha=0.00001)
     W = nmf.fit_transform(vectorized)

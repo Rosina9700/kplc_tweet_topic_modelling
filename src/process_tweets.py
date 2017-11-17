@@ -26,16 +26,18 @@ def date_check(dfs, last_start_date):
     for df in dfs:
         df['date'] = pd.to_datetime(df['date'])
         if df['date'].min() < pd.to_datetime(last_start_date):
+            df = df[df['date'] < pd.to_datetime('2017-10-20')]
             dfs_to_use.append(df)
     return dfs
 
-def clean_data(dfs):
-    dfs = date_check(dfs,'2016/11/03')
+def clean_data(dfs, date_check=False):
+    if date_check:
+        dfs = date_check(dfs,'2016/11/03')
     data = dfs[0].append(dfs[1:])
     data = data[(data['text'].str.len()<=140)&(data['text'].str.len()>0)]
     data.drop_duplicates(['date','text'],inplace=True)
     data = data[data['username']!='kpc']
-    data = data[data['date'] < pd.to_datetime('2017-10-20')]
+    data['date'] = pd.to_datetime(data['date'])
     data['year'] = data['date'].dt.year
     data['month'] = data['date'].dt.month
     data['day'] = data['date'].dt.day
@@ -53,7 +55,7 @@ if __name__=='__main__':
     print 'reading data...'
     tweets = read_tweets('../data/')
     print 'cleaning data...'
-    tweets = clean_data(tweets)
+    tweets = clean_data(tweets, date_check=True)
     tweets.to_csv('../data_output/kplc_tweets.csv')
     print 'splitting data...'
     company, customer = split_company_customer(tweets)
