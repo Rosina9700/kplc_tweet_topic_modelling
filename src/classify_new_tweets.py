@@ -10,6 +10,8 @@ from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from process_tweets import read_tweets, clean_data, split_company_customer
 from topic_modelling import build_text_vectorizer
 
+import cPickle as pickle
+
 
 if __name__ == '__main__':
     print 'reading in data'
@@ -17,7 +19,7 @@ if __name__ == '__main__':
     new_tweets = read_tweets('../data_new/')
     new_tweets = clean_data(new_tweets)
 
-    print 'creating vectorizer on training data'
+    print 'vectorizing training data'
     training_text = training_data['text'].values
     vect, vocab = build_text_vectorizer(training_text, use_stemmer=True, max_features=150,use_tfidf=False)
     train_vectorized = vect.transform(training_text).toarray()

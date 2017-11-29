@@ -78,11 +78,6 @@ if __name__=='__main__':
     text = data['text'].values
     vect, vocab = build_text_vectorizer(text, use_stemmer=True, max_features=150, use_tfidf=False)
     vectorized = vect.transform(text).toarray()
-    # print 'save vectorizer...'
-    # filename = 'text_vectorizer.pkl'
-    # with open(filename, 'wb') as f:
-    #     pickle.dump(vect, f)
-    # f.close()
     print 'NMF...'
     nmf = NMF(n_components=3, max_iter=200, alpha=0.00001)
     W = nmf.fit_transform(vectorized)
